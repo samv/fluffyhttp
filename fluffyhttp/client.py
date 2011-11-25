@@ -25,7 +25,7 @@ class Client(object):
             }
 
         if 'User-Agent' not in headers:
-            headers['User-Agent'] = useragent
+            headers['User-Agent'] = self.useragent
 
         self._default_headers = headers
 
