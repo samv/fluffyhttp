@@ -1,4 +1,5 @@
-from urlparse import urlunparse as urlimplode, urlparse as urlexplode, parse_qsl as queryexplode, urljoin
+from urlparse import urlunparse as urlimplode, urlparse as urlexplode
+from urlparse import parse_qsl as queryexplode, urljoin
 from urllib import urlencode as queryimplode
 import re
 
@@ -11,16 +12,24 @@ class Url(object):
 Construct and deconstruct an URL in a simple and easy manner.
 Path is a list of path elements.
 Query is a list of 2-uples (key, value).
-User can either configure netloc as a whole or username, password, host, and port independently.
+User can either configure netloc as a whole or username, password, host, and
+port independently.
 String representation of Url instance is the URL string itself.
 """
 
-    PATH_SEP = '/' # necessary for splitting
+    PATH_SEP = '/'   # necessary for splitting
 
-    def __init__(self, string_url=None, scheme='http', netloc='', path=[], params='', query=[], fragment='', username=None, password=None, host='', port=None):
-        """Construct an instance from an URL string or from some or all of the named arguments :
-    scheme ('http'), netloc (''), path ([]), params (''), query ([]), fragment (''), username (None), password (None), host (''), port (None).
-    If netloc is not empty, it takes precedence over (username, password, host, port). Only host is mandatory if netloc is not provided."""
+    netloc_re = re.compile('(([^:@]+)(:([^@]+))?@)?([^:]+)(:([0-9]+))?')
+
+    def __init__(self, string_url=None, scheme='http', netloc='', path=[],
+                 params='', query=[], fragment='', username=None,
+                 password=None, host='', port=None):
+        """Construct an instance from an URL string or from some or all of the
+named arguments :
+scheme ('http'), netloc (''), path ([]), params (''), query ([]),
+fragment (''), username (None), password (None), host (''), port (None).
+If netloc is not empty, it takes precedence over (username, password, host,
+port). Only host is mandatory if netloc is not provided."""
         if string_url is not None:
             p = urlexplode(string_url)
             scheme, netloc, path, params, query, fragment = p
@@ -74,7 +83,7 @@ String representation of Url instance is the URL string itself.
         optional0, self.username, \
         optional1, self.password, \
         self.host, \
-        optional2, self.port = re.match('(([^:@]+)(:([^@]+))?@)?([^:]+)(:([0-9]+))?', netloc).groups()
+        optional2, self.port = self.netloc_re.match(netloc).groups()
 
     def __add__(self, u):
         "Join two URLs."
