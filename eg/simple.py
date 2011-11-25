@@ -19,7 +19,9 @@ else:
 try:
     response = client.get('http://lumberjaph.net/foo/bar/baz')
 except HTTPException, e:
-    if e.is_redirect() is True:
+    if e.is_redirect():
         print "on a une redirection"
+    elif e.is_client_error():
+        print e
     else:
-        print "on a autre chose"
+        print "something else is going on"
