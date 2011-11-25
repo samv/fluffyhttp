@@ -1,13 +1,13 @@
-from .request import Request
-from .response import Response
-from .exception import *
+from request import Request
+from response import Response
+from exception import *
 from urllib3.poolmanager import PoolManager
 from urllib3 import connectionpool, poolmanager
 
 
 class Client(object):
 
-    def __init__(self, useragent=None, timeout=None, keep_alive=1):
+    def __init__(self, useragent=None, timeout=None, keep_alive=1, headers=None):
 
         if useragent is None:
             self.useragent = 'python-fluffyhttp'
@@ -19,6 +19,16 @@ class Client(object):
         else:
             self.timeout = timeout
 
+        if headers is None:
+            headers = {
+                'Connection': 'keep-alive',
+            }
+
+        if 'User-Agent' not in headers:
+            headers['User-Agent'] = useragent
+
+        self._default_headers = headers
+
         self._poolmanager = PoolManager(
             maxsize=keep_alive
         )
@@ -26,7 +36,7 @@ class Client(object):
     def request(self, request):
         return self._request(request)
 
-    def get(self, url):
+    def get(self, url, headers=dict):
         request = Request('GET', url)
         return self._request(request)
 
@@ -42,8 +52,13 @@ class Client(object):
     def _request(self, request):
         conn = connectionpool.connection_from_url(request.url)
 
+        headers = self._merge_headers(request.headers)
+
         try:
-            r = conn.urlopen(method=request.method, url=request.url)
+            r = conn.urlopen(
+                method=request.method,
+                url=request.url,
+                headers=headers)
         except Exception, e:
             print "meh"
 
@@ -65,3 +80,7 @@ class Client(object):
             http_exception(resp)
 
         return resp
+
+    def _merge_headers(self, headers):
+        final_headers = dict(self._default_headers.items() + headers.items())
+        return final_headers
