@@ -10,3 +10,8 @@ class TestClient(TestCase):
         self.assertEqual(client.useragent, 'python-fluffyhttp')
         client = Client(useragent='foo')
         self.assertEqual(client.useragent, 'foo')
+
+    def test_headers(self):
+        client = Client()
+        self.assertTrue(client._default_headers['Connection'])
+        self.assertEqual(client._default_headers['User-Agent'], 'python-fluffyhttp')
