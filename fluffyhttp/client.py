@@ -23,7 +23,6 @@ class Client(object):
             maxsize=keep_alive
         )
 
-
     def request(self, request):
         return self._request(request)
 
@@ -62,7 +61,7 @@ class Client(object):
             reason=r.reason,
         )
 
-        if resp.is_success() is False:
+        if resp.is_success is False:
             http_exception(resp)
 
         return resp
