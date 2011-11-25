@@ -1,11 +1,7 @@
 import sys
 sys.path.append('.')
 
-from fluffyhttp.client import Client
-from fluffyhttp.request import Request
-from fluffyhttp.response import Response
-from fluffyhttp.exception import *
-
+from fluffyhttp import *
 
 client = Client()
 request = Request('GET', 'http://lumberjaph.net')
