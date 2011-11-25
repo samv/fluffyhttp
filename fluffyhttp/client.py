@@ -1,5 +1,6 @@
 from fluffyhttp.request import Request
 from fluffyhttp.response import Response
+from fluffyhttp.exception import *
 import httplib2
 
 
@@ -19,7 +20,8 @@ class Client(object):
         return self._request(request)
 
     def get(self, url):
-        pass
+        request = Request('GET', url)
+        return self._request(request)
 
     def put(self, url):
         pass
@@ -34,8 +36,10 @@ class Client(object):
         h = httplib2.Http()
         headers, content = h.request(request.url, request.method)
 
-        status = headers['status']
+        status = int(headers['status'])
         del(headers['status'])
 
-        resp = Response(status=200, headers=headers, content=content)
+        resp = Response(status=status, headers=headers, content=content)
+        if resp.is_success() is False:
+            http_exception(status)
         return resp
