@@ -14,3 +14,16 @@
 ### Response
 
 ### Exceptions
+
+## How to use fluffyhttp
+
+### Git
+
+    git clone git://github.com/franckcuny/fluffyhttp.git
+    cd fluffyhttp
+    virtualenv env
+    source env/bin/activate
+    pip install -r requirements.txt
+    pip install -r requirements-tests.txt
+    ./run_tests.py tests/test_*
+    python eg/simple.py
