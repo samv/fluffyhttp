@@ -2,6 +2,7 @@ from urlparse import urlunparse as urlimplode, urlparse as urlexplode, parse_qsl
 from urllib import urlencode as queryimplode
 import re
 
+
 class Url(object):
     __author__ = "Damien 'bl0b' Leroux <damien.leroux@gmail.com>"
 
@@ -13,7 +14,9 @@ Query is a list of 2-uples (key, value).
 User can either configure netloc as a whole or username, password, host, and port independently.
 String representation of Url instance is the URL string itself.
 """
+
     PATH_SEP = '/' # necessary for splitting
+
     def __init__(self, string_url=None, scheme='http', netloc='', path=[], params='', query=[], fragment='', username=None, password=None, host='', port=None):
         """Construct an instance from an URL string or from some or all of the named arguments :
     scheme ('http'), netloc (''), path ([]), params (''), query ([]), fragment (''), username (None), password (None), host (''), port (None).
@@ -39,9 +42,11 @@ String representation of Url instance is the URL string itself.
         self.query = query
         self.fragment = fragment
         self.params = params
+
     def __str__(self):
         "The URL in human-copypastable form."
         return urlimplode(self)
+
     def __iter__(self):
         "Behave as a tuple or more precisely as a urlparse.ParseResult"
         yield self.scheme
@@ -50,6 +55,7 @@ String representation of Url instance is the URL string itself.
         yield self.params
         yield queryimplode(self.query)
         yield self.fragment
+
     def _netloc_get(self):
         "Reconstruct netloc. Not to be called directly."
         ret = []
@@ -62,15 +68,18 @@ String representation of Url instance is the URL string itself.
         if self.port is not None:
             ret.append(':'+str(self.port))
         return ''.join(ret)
+
     def _netloc_set(self, netloc):
         "Deconstruct netloc. Not to be called directly."
         optional0, self.username, \
         optional1, self.password, \
         self.host, \
         optional2, self.port = re.match('(([^:@]+)(:([^@]+))?@)?([^:]+)(:([0-9]+))?', netloc).groups()
+
     def __add__(self, u):
         "Join two URLs."
         return Url(urljoin(str(self), str(u)))
+
     __repr__ = __str__
     netloc = property(_netloc_get, _netloc_set)
     is_absolute = property(lambda s: bool(s.host))
@@ -90,4 +99,3 @@ String representation of Url instance is the URL string itself.
 #                exec k
 #                if e:
 #                    print e
-
