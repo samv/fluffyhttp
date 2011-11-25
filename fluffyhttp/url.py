@@ -62,11 +62,11 @@ String representation of Url instance is the URL string itself.
         if self.username is not None:
             ret.append(self.username)
             if self.password is not None:
-                ret.append(':'+self.password)
+                ret.append(':' + self.password)
             ret.append('@')
         ret.append(self.host or '')
         if self.port is not None:
-            ret.append(':'+str(self.port))
+            ret.append(':' + str(self.port))
         return ''.join(ret)
 
     def _netloc_set(self, netloc):
@@ -84,7 +84,7 @@ String representation of Url instance is the URL string itself.
     netloc = property(_netloc_get, _netloc_set)
     is_absolute = property(lambda s: bool(s.host))
     is_relative = property(lambda s: not bool(s.host))
-    is_secure = property(lambda s: s.scheme.lower()=='https')
+    is_secure = property(lambda s: s.scheme.lower() == 'https')
 
 
 #if __name__=='__main__':
