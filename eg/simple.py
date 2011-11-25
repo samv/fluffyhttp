@@ -4,13 +4,22 @@ sys.path.append('.')
 from fluffyhttp.client import Client
 from fluffyhttp.request import Request
 from fluffyhttp.response import Response
+from fluffyhttp.exception import *
 
 
 client = Client()
-request = Request('GET', 'http://saymedia.com')
+request = Request('GET', 'http://lumberjaph.net')
 response = client.request(request)
 
 if response.is_success():
-    print response.headers
-else:
     print response.status
+else:
+    print response
+
+try:
+    response = client.get('http://lumberjaph.net/foo/bar/baz')
+except HTTPException, e:
+    if e.is_redirect() is True:
+        print "on a une redirection"
+    else:
+        print "on a autre chose"
