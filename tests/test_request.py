@@ -36,7 +36,7 @@ class TestClient(TestCase):
         request = Request('GET', 'http')
         self.assertIsInstance(request.url, Url)
 
-
     def test_content(self):
         request = Request('GET', 'http', content='foo')
         self.assertEqual(request.content, 'foo')
+

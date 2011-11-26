@@ -1,6 +1,7 @@
 from request import Request
 from response import Response
 from headers import Headers
+from handlers import Handlers
 from exception import *
 from url import Url
 from urllib3.poolmanager import PoolManager
@@ -14,6 +15,7 @@ class Client(object):
 
         self.timeout = 60
         self.max_redirect = max_redirect
+        self._handlers = Handlers()
 
         if agent is None:
             self.agent = 'python-fluffyhttp'
@@ -34,6 +36,10 @@ class Client(object):
             maxsize=keep_alive
         )
 
+
+    def add_handler(self, position, cb):
+        self._handlers.append(position, cb)
+
     def default_header(self, key):
         return self.default_headers.get('key')
 
@@ -53,13 +59,16 @@ class Client(object):
         return self._request(request)
 
     def put(self, url, headers={}, content=None):
-        pass
+        request = Request('PUT', url, headers=headers, content=content)
+        return self._request(request)
 
     def post(self, url, headers={}, content=None):
-        pass
+        request = Request('PUT', url, headers=headers, content=content)
+        return self._request(request)
 
     def delete(self, url, headers={}, content=None):
-        pass
+        request = Request('DELETE', url, headers=headers)
+        return self._request(request)
 
     def _request(self, request):
         url = str(request.url)
@@ -68,11 +77,20 @@ class Client(object):
         headers = self._merge_headers(request.headers)
 
         try:
+            dispatch_response = self._handlers.dispatch('request_send', request)
+            if (isinstance(dispatch_response, Response)):
+                return dispatch_response
+        except Exception, e:
+            print e
+            raise e
+
+        try:
             r = conn.urlopen(
                 method=request.method,
                 url=url,
                 headers=headers,
-                timeout=self.timeout
+                timeout=self.timeout,
+                body=request.content,
             )
             return self._build_response(r)
         except Exception, e:
