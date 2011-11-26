@@ -1,6 +1,9 @@
+from headers import Headers
+
+
 class Request(object):
 
-    def __init__(self, method, url, headers=dict(), content=None):
+    def __init__(self, method, url, headers=Headers(), content=None):
         self.method = method
         self.url = url
         self.content = content

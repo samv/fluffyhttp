@@ -1,6 +1,9 @@
+from headers import Headers
+
+
 class Response(object):
 
-    def __init__(self, status, headers, content, reason):
+    def __init__(self, status, headers=Headers(), content=None, reason=None):
         print headers
         self.status = status
         self._headers = headers
