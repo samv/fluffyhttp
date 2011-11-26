@@ -21,3 +21,8 @@ except HTTPException, e:
         print e
     else:
         print "something else is going on"
+
+
+res = client.head('http://lumberjaph.net/');
+print res.status
+print res.content
