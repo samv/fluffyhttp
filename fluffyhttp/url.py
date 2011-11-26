@@ -23,7 +23,7 @@ String representation of Url instance is the URL string itself.
 
     def __init__(self, string_url=None, scheme='http', netloc='', path=[],
                  params='', query=[], fragment='', username=None,
-                 password=None, host='', port=None):
+                 password=None, host=None, port=None):
         """Construct an instance from an URL string or from some or all of the
 named arguments :
 scheme ('http'), netloc (''), path ([]), params (''), query ([]),
@@ -37,7 +37,7 @@ port). Only host is mandatory if netloc is not provided."""
             self.password = p.password
             self.host = p.hostname
             self.port = p.port
-            path = path.split(self.PATH_SEP)
+            path = filter(bool, path.split(self.PATH_SEP))
             query = queryexplode(query)
         elif netloc:
             self.netloc = netloc
@@ -88,6 +88,9 @@ port). Only host is mandatory if netloc is not provided."""
     def __add__(self, u):
         "Join two URLs."
         return Url(urljoin(str(self), str(u)))
+
+    def __eq__(self, u):
+        return str(self) == str(u)
 
     __repr__ = __str__
     netloc = property(_netloc_get, _netloc_set)
