@@ -27,3 +27,12 @@
     pip install -r requirements-tests.txt
     ./run_tests.py tests/test_*
     python eg/simple.py
+
+## TODO
+
+ * doc
+ * docstring
+ * moar tests
+ * post/put/delete
+ * redirect
+ * moar exceptions
