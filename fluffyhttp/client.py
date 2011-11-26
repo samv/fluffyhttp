@@ -2,6 +2,7 @@ from request import Request
 from response import Response
 from headers import Headers
 from exception import *
+from url import Url
 from urllib3.poolmanager import PoolManager
 from urllib3 import connectionpool, poolmanager
 
@@ -59,10 +60,9 @@ class Client(object):
                 headers=headers,
                 timeout=self.timeout
             )
+            return self._build_response(r)
         except Exception, e:
-            print "meh"
-
-        return self._build_response(r)
+            raise e
 
     def _build_response(self, r):
         status = r.status
