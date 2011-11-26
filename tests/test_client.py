@@ -52,18 +52,20 @@ class TestClient(TestCase):
         self.assertTrue(client.default_headers.get('Connection'))
         self.assertEqual(client.default_headers.get('User-Agent'), 'python-fluffyhttp')
 
-    def test_get(self):
+    def test_requests(self):
+        for method in ['GET', 'POST']:
+            self._test_request(method)
+
+    def _test_request(self, method):
         client = Client()
         client.add_handler('request_send', _test_cb)
-        resp = client.get(tests['GET']['url'], tests['GET']['headers'])
+
+        request = Request(method, tests[method]['url'], tests[method]['headers'])
+
+        if 'content' in tests[method]:
+            request.content = tests[method]['content']
+
+        resp = client.request(request)
+
         self.assertTrue(resp)
         self.assertEqual(resp.status, 204)
-
-    def test_put(self):
-        pass
-
-    def test_post(self):
-        pass
-
-    def test_delete(self):
-        pass
