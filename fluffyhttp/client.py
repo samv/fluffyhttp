@@ -8,17 +8,14 @@ from urllib3 import connectionpool, poolmanager
 
 class Client(object):
 
-    def __init__(self, useragent=None, timeout=None, keep_alive=1, headers=None):
+    def __init__(self, useragent=None, timeout=60, keep_alive=1, headers=None):
+
+        self.timeout = 60
 
         if useragent is None:
             self.useragent = 'python-fluffyhttp'
         else:
             self.useragent = useragent
-
-        if timeout is None:
-            self.timeout = 60
-        else:
-            self.timeout = timeout
 
         if headers is None:
             headers = {
@@ -59,7 +56,9 @@ class Client(object):
             r = conn.urlopen(
                 method=request.method,
                 url=request.url,
-                headers=headers)
+                headers=headers,
+                timeout=self.timeout
+            )
         except Exception, e:
             print "meh"
 
@@ -67,8 +66,8 @@ class Client(object):
 
     def _build_response(self, r):
         status = r.status
-        headers = r.headers
-        content = 'foo'
+        headers = Headers(r.headers)
+        content = r.data
 
         resp = Response(
             status=status,
