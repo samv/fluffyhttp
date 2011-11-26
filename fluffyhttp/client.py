@@ -9,30 +9,37 @@ from urllib3 import connectionpool, poolmanager
 
 class Client(object):
 
-    def __init__(self, useragent=None, timeout=10, keep_alive=1, headers=None,
-            max_redirects=7):
+    def __init__(self, agent=None, timeout=10, keep_alive=1,
+            default_headers={}, max_redirect=7):
 
         self.timeout = 60
-        self.max_redirects = max_redirects
+        self.max_redirect = max_redirect
 
-        if useragent is None:
-            self.useragent = 'python-fluffyhttp'
+        if agent is None:
+            self.agent = 'python-fluffyhttp'
         else:
-            self.useragent = useragent
+            self.agent = agent
 
-        if headers is None:
-            headers = {
+        if len(default_headers) == 0:
+            default_headers = {
                 'Connection': 'keep-alive',
             }
 
-        if 'User-Agent' not in headers:
-            headers['User-Agent'] = self.useragent
+        if 'User-Agent' not in default_headers:
+            default_headers['User-Agent'] = self.agent
 
-        self._default_headers = Headers(headers)
+        self._default_headers = Headers(default_headers)
 
         self._poolmanager = PoolManager(
             maxsize=keep_alive
         )
+
+    def default_header(self, key):
+        return self.default_headers.get('key')
+
+    @property
+    def default_headers(self):
+        return self._default_headers
 
     def request(self, request):
         return self._request(request)
@@ -90,5 +97,5 @@ class Client(object):
 
     def _merge_headers(self, headers):
         final_headers = Headers(
-                self._default_headers.items() + headers.items())
+                self.default_headers.items() + headers.items())
         return final_headers
