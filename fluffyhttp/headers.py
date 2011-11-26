@@ -3,7 +3,8 @@ class Headers(dict):
     @property
     def _normalize_keys(self):
         if not hasattr(self, '_normalized_keys') or not self._normalized_keys:
-            self._normalized_keys = dict((k.lower(), k) for k in self.iterkeys())
+            self._normalized_keys = dict(
+                    (k.lower(), k) for k in self.iterkeys())
         return self._normalized_keys
 
     def __setitem__(self, key, value):

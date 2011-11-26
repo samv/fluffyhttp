@@ -9,9 +9,11 @@ from urllib3 import connectionpool, poolmanager
 
 class Client(object):
 
-    def __init__(self, useragent=None, timeout=60, keep_alive=1, headers=None):
+    def __init__(self, useragent=None, timeout=10, keep_alive=1, headers=None,
+            max_redirects=7):
 
         self.timeout = 60
+        self.max_redirects = max_redirects
 
         if useragent is None:
             self.useragent = 'python-fluffyhttp'
@@ -35,28 +37,33 @@ class Client(object):
     def request(self, request):
         return self._request(request)
 
-    def get(self, url, headers=Headers):
-        request = Request('GET', url)
+    def head(self, url, headers={}):
+        request = Request('HEAD', url, headers=headers)
         return self._request(request)
 
-    def put(self, url):
+    def get(self, url, headers={}):
+        request = Request('GET', url, headers=headers)
+        return self._request(request)
+
+    def put(self, url, headers={}, content=None):
         pass
 
-    def post(self, url):
+    def post(self, url, headers={}, content=None):
         pass
 
-    def delete(self, url):
+    def delete(self, url, headers={}, content=None):
         pass
 
     def _request(self, request):
-        conn = connectionpool.connection_from_url(request.url)
+        url = str(request.url)
+        conn = connectionpool.connection_from_url(url)
 
         headers = self._merge_headers(request.headers)
 
         try:
             r = conn.urlopen(
                 method=request.method,
-                url=request.url,
+                url=url,
                 headers=headers,
                 timeout=self.timeout
             )
@@ -82,5 +89,6 @@ class Client(object):
         return resp
 
     def _merge_headers(self, headers):
-        final_headers = Headers(self._default_headers.items() + headers.items())
+        final_headers = Headers(
+                self._default_headers.items() + headers.items())
         return final_headers
