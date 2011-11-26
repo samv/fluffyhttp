@@ -79,7 +79,7 @@ class Test_Url(TestCase):
             copy = Url(str(url))
             self.assertEqual(str(copy), str(url), msg="copy is not identical")
 
-    def url_netloc(self):
+    def test_netloc(self):
         u=Url()
         self.assertTrue(u)
         u.username = 'toto'
@@ -93,13 +93,13 @@ class Test_Url(TestCase):
         self.assertEqual('toto.com', u.host)
         self.assertEqual(None, u.port)
 
-    def url_add(self):
+    def test_add(self):
         u = Url('https://foob.ar/some/where/some/thing')
         a = Url('http://foob.it/')
-        rel = Url('../../../rville')
+        rel = Url('../../rville')
         self.assertEqual(a, u+a)
         self.assertEqual(u, a+u)
-        self.assertEqual(Url('http://foob.ar/some/rville'), u+rel)
+        self.assertEqual(Url('https://foob.ar/some/rville'), u+rel)
         self.assertEqual(u, rel+u)
 
 
