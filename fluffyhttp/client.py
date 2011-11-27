@@ -71,8 +71,8 @@ class Client(object):
         return self._request(request)
 
     def _request(self, request):
-        url = str(request.url)
-        conn = connectionpool.connection_from_url(url)
+        url = request.url
+        conn = connectionpool.connection_from_url(str(url))
 
         headers = self._merge_headers(request.headers)
 
@@ -81,13 +81,14 @@ class Client(object):
             if (isinstance(dispatch_response, Response)):
                 return dispatch_response
         except Exception, e:
-            print e
             raise e
 
         try:
+            # XXX fix in Url
+            path = '/'.join(request.url.path) or '/'
             r = conn.urlopen(
                 method=request.method,
-                url=url,
+                url=path,
                 headers=headers,
                 timeout=self.timeout,
                 body=request.content,

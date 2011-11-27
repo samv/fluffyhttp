@@ -4,7 +4,6 @@ from headers import Headers
 class Response(object):
 
     def __init__(self, status, headers=Headers(), content=None, reason=None):
-        print headers
         self.status = status
         self._headers = headers
         self._content = content
@@ -18,7 +17,7 @@ class Response(object):
 
     @property
     def content(self):
-        pass
+        return self._content
 
     @property
     def header(self):
