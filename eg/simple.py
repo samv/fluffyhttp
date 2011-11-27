@@ -12,17 +12,17 @@ if response.is_success:
 else:
     print response
 
-try:
-    response = client.get('http://lumberjaph.net/foo/bar/baz')
-except HTTPException, e:
-    if e.is_redirect:
-        print "on a une redirection"
-    elif e.is_client_error:
-        print e
-    else:
-        print "something else is going on"
+#try:
+    #response = client.get('http://lumberjaph.net/foo/bar/baz')
+#except HTTPException, e:
+    #if e.is_redirect:
+        #print "on a une redirection"
+    #elif e.is_client_error:
+        #print e
+    #else:
+        #print "something else is going on"
 
 
-res = client.head('http://lumberjaph.net/');
-print res.status
-print res.content
+#res = client.head('http://lumberjaph.net/');
+#print res.status
+#print res.content

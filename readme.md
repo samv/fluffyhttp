@@ -2,8 +2,10 @@
 
 ## Synopsis
 
+    from fluffyhttp import *
+
     client = fluffyhttp.Client(useragent='my fluffy client')
-    request = fluffyhttp.Request(GET, 'http://github.com')
+    request = fluffyhttp.Request(GET, 'http://lumberjaph.net')
     response = client.request(request)
     print response.status
 
