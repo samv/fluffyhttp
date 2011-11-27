@@ -1,7 +1,7 @@
 from unittest2 import TestCase
 from fluffyhttp.request import Request
 from fluffyhttp.headers import Headers
-from fluffyhttp.url import Url
+from fluffyurl.url import Url
 
 
 class TestClient(TestCase):
