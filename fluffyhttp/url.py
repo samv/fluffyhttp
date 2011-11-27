@@ -20,9 +20,38 @@ String representation of Url instance is the URL string itself.
     class Path(list):
         SEP = '/'   # necessary for splitting
         def __init__(self, x):
-            list.__init__(self, type(x) is str and filter(bool, x.split(Url.Path.SEP)) or x)
+            if type(x) is str:
+                parts = [x for (i, x)
+                            in enumerate(x.split(Url.Path.SEP))
+                            if x or not i]
+            else:
+                parts = x
+            list.__init__(self, parts)
         def __str__(self):
-            return Url.Path.SEP+Url.Path.SEP.join(self)
+            return Url.Path.SEP.join(self)
+        @property
+        def is_absolute(self):
+            return len(self)>0 and self[0]==''
+        @property
+        def is_relative(self):
+            return len(self)>0 and self[0]!=''
+        def canonify(self):
+            if len(self)>0 and self[0]=='':
+                tmp = self[1:]
+                init = self[:1]
+            else:
+                tmp = self
+                init = []
+            def _canon(a, b):
+                if b in ('.', ''):
+                    return a
+                if b=='..':
+                    return a[:-1]
+                return a+[b]
+            canon = init + reduce(_canon, tmp, [])
+            self.__init__(canon)
+            return self
+
 
 
     netloc_re = re.compile('(([^:@]+)(:([^@]+))?@)?([^:]+)(:([0-9]+))?')
