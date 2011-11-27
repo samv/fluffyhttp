@@ -17,7 +17,13 @@ port independently.
 String representation of Url instance is the URL string itself.
 """
 
-    PATH_SEP = '/'   # necessary for splitting
+    class Path(list):
+        SEP = '/'   # necessary for splitting
+        def __init__(self, x):
+            list.__init__(self, type(x) is str and filter(bool, x.split(Url.Path.SEP)) or x)
+        def __str__(self):
+            return Url.Path.SEP+Url.Path.SEP.join(self)
+
 
     netloc_re = re.compile('(([^:@]+)(:([^@]+))?@)?([^:]+)(:([0-9]+))?')
 
@@ -37,7 +43,6 @@ port). Only host is mandatory if netloc is not provided."""
             self.password = p.password
             self.host = p.hostname
             self.port = p.port
-            path = filter(bool, path.split(self.PATH_SEP))
             query = queryexplode(query)
         elif netloc:
             self.netloc = netloc
@@ -47,7 +52,7 @@ port). Only host is mandatory if netloc is not provided."""
             self.username = username
             self.password = password
         self.scheme = scheme
-        self.path = path
+        self._path = Url.Path(path)
         self.query = query
         self.fragment = fragment
         self.params = params
@@ -60,7 +65,7 @@ port). Only host is mandatory if netloc is not provided."""
         "Behave as a tuple or more precisely as a urlparse.ParseResult"
         yield self.scheme
         yield self.netloc
-        yield self.PATH_SEP.join(self.path)
+        yield str(self.path)
         yield self.params
         yield queryimplode(self.query)
         yield self.fragment
@@ -85,6 +90,9 @@ port). Only host is mandatory if netloc is not provided."""
         self.host, \
         optional2, self.port = self.netloc_re.match(netloc).groups()
 
+    def _path_set(self, p):
+        self._path = Url.Path(p)
+
     def __add__(self, u):
         "Join two URLs."
         return Url(urljoin(str(self), str(u)))
@@ -93,6 +101,7 @@ port). Only host is mandatory if netloc is not provided."""
         return str(self) == str(u)
 
     __repr__ = __str__
+    path = property(lambda s: s._path, _path_set)
     netloc = property(_netloc_get, _netloc_set)
     is_absolute = property(lambda s: bool(s.host))
     is_relative = property(lambda s: not bool(s.host))
