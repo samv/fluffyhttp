@@ -1,12 +1,11 @@
 class Handlers(object):
 
-    _phases = ['request_prepare', 'request_send' ]
-    _handlers = {
-        'request_send': []
-    }
+    _phases = ['request_prepare', 'request_send']
 
     def __init__(self):
-        pass
+        self._handlers = {
+            'request_send': []
+        }
 
     def handlers(self, phase):
         if phase in self._phases:
