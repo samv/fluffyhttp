@@ -3,7 +3,7 @@ from response import Response
 from headers import Headers
 from handlers import Handlers
 from exception import *
-from url import Url
+from fluffyurl.url import Url
 from urllib3.poolmanager import PoolManager
 from urllib3 import connectionpool, poolmanager
 
@@ -35,7 +35,6 @@ class Client(object):
         self._poolmanager = PoolManager(
             maxsize=keep_alive
         )
-
 
     def add_handler(self, position, cb):
         self._handlers.append(position, cb)
@@ -94,14 +93,15 @@ class Client(object):
         headers = self._merge_headers(request.headers)
 
         try:
-            dispatch_response = self._handlers.dispatch('request_send', request)
+            dispatch_response = self._handlers.dispatch(
+                    'request_send', request)
             if (isinstance(dispatch_response, Response)):
                 return dispatch_response
         except Exception, e:
             raise e
 
         # XXX fix in Url
-        path = '/%s' % '/'.join(request.url.path)
+        path = request.url.path
         r = conn.urlopen(
             method=request.method,
             url=path,
