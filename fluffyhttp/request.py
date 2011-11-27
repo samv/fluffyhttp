@@ -1,5 +1,5 @@
 from headers import Headers
-from url import Url
+from fluffyurl.url import Url
 
 
 class Request(object):
@@ -25,7 +25,7 @@ class Request(object):
     def _set_method(self, value):
         self._method = str(value).upper()
 
-    def header(self, name, value):
+    def header(self, name, value=None):
         if value is None:
             return self._headers.get(name)
         else:
