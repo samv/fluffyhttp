@@ -101,7 +101,7 @@ class Client(object):
             raise e
 
         # XXX fix in Url
-        path = request.url.path
+        path = str(request.url.path)
         r = conn.urlopen(
             method=request.method,
             url=path,
