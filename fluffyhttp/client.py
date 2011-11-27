@@ -71,6 +71,23 @@ class Client(object):
         return self._request(request)
 
     def _request(self, request):
+        try:
+            resp = self._make_request(request)
+        except Exception, e:
+            raise e
+
+        if resp.is_success is False:
+            if resp.is_redirect and len(resp.redirects) < self.max_redirect:
+                try:
+                    return self._follow_redirect(resp, request)
+                except Exception, e:
+                    raise e
+            else:
+                http_exception(resp)
+
+        return resp
+
+    def _make_request(self, request):
         url = request.url
         conn = connectionpool.connection_from_url(str(url))
 
@@ -83,21 +100,19 @@ class Client(object):
         except Exception, e:
             raise e
 
-        try:
-            # XXX fix in Url
-            path = '/'.join(request.url.path) or '/'
-            r = conn.urlopen(
-                method=request.method,
-                url=path,
-                headers=headers,
-                timeout=self.timeout,
-                body=request.content,
-            )
-            return self._build_response(r)
-        except Exception, e:
-            raise e
+        # XXX fix in Url
+        path = '/%s' % '/'.join(request.url.path)
+        r = conn.urlopen(
+            method=request.method,
+            url=path,
+            headers=headers,
+            timeout=self.timeout,
+            body=request.content,
+            redirect=False,
+        )
+        return self._build_response(r, request)
 
-    def _build_response(self, r):
+    def _build_response(self, r, request):
         status = r.status
         headers = Headers(r.headers)
         content = r.data
@@ -109,12 +124,22 @@ class Client(object):
             reason=r.reason,
         )
 
-        if resp.is_success is False:
-            http_exception(resp)
-
         return resp
 
     def _merge_headers(self, headers):
         final_headers = Headers(
                 self.default_headers.items() + headers.items())
         return final_headers
+
+    def _follow_redirect(self, resp, r):
+        redirects = list()
+        while (resp.is_redirect and len(redirects) < self.max_redirect):
+            location = resp.header('location')
+            if location is None:
+                break
+            redirects.append(resp)
+            req = Request(r.method, location)
+            resp = self._make_request(req)
+            location = resp.header('location')
+        resp.redirects = redirects
+        return resp
