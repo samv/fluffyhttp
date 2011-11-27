@@ -7,6 +7,7 @@ class Request(object):
     """A Request object."""
 
     def __init__(self, method, url, headers=Headers(), content=None):
+        # XXX no content on GET / DELETE ?
         self.method = method
         self.content = content
 
@@ -24,8 +25,11 @@ class Request(object):
     def _set_method(self, value):
         self._method = str(value).upper()
 
-    def header(self, name):
-        return self._headers.get(name)
+    def header(self, name, value):
+        if value is None:
+            return self._headers.get(name)
+        else:
+            self._headers[name] = value
 
     @property
     def headers(self):
