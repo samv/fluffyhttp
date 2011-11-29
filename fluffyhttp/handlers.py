@@ -1,32 +1,39 @@
 class Handlers(object):
 
-    _phases = ['request_prepare', 'request_send']
+    _phases = [
+        'request_prepare',
+        'request_send',
+        'response_done',
+        'response_redirect',
+    ]
 
     def __init__(self):
-        self._handlers = {
-            'request_send': []
-        }
+        self._handlers = {}
 
     def handlers(self, phase):
-        if phase in self._phases:
-            return self._handlers.get(phase, list())
-        else:
-            print "no phase %s" % phase
-            raise
+        self._check_phase(phase)
+        return self._handlers.get(phase, None)
 
-    def append(self, phase, cb):
-        if phase in self._phases:
-            self._handlers[phase].append(cb)
-        else:
-            print "no phase %s" % phase
-            raise
+    def add_handler(self, phase, cb):
+        self._check_phase(phase)
+        self._handlers[phase] = cb
 
-    def dispatch(self, phase, request):
-        for handler in self.handlers(phase):
-            if phase == 'request_send':
-                res = self._dispatch_request_send(handler, request)
-                if res is not None:
-                    return res
+    def remove_handler(self, phase):
+        self._check_phase(phase)
+        self._handlers[phase] = None
 
-    def _dispatch_request_send(self, cb, request):
-        return cb.__call__(request)
+    def dispatch(self, phase, input_object):
+        self._check_phase(phase)
+        cb = self.handlers(phase)
+
+        if cb is None:
+            return input_object
+
+        res = cb.__call__(input_object)
+        if res is not None:
+            return res
+        return input_object
+
+    def _check_phase(self, phase):
+        if phase not in self._phases:
+            raise Exception("phase %s does not exists" % phase)

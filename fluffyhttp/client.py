@@ -37,7 +37,10 @@ class Client(object):
         )
 
     def add_handler(self, position, cb):
-        self._handlers.append(position, cb)
+        self._handlers.add_handler(position, cb)
+
+    def remove_handler(self, position):
+        self._handler.remove_handler(position)
 
     def default_header(self, key):
         return self.default_headers.get('key')
@@ -70,6 +73,7 @@ class Client(object):
         return self._request(request)
 
     def _request(self, request):
+
         try:
             resp = self._make_request(request)
         except Exception, e:
@@ -87,6 +91,13 @@ class Client(object):
         return resp
 
     def _make_request(self, request):
+
+        try:
+            request = self._handlers.dispatch('request_prepare', request)
+        except Exception, e:
+            response = Response(status=400, reason='Bad request')
+            return response
+
         url = request.url
         conn = connectionpool.connection_from_url(str(url))
 
@@ -123,6 +134,15 @@ class Client(object):
             content=content,
             reason=r.reason,
         )
+
+        new_resp = self._handlers.dispatch('response_done', response)
+        if new_resp is not None:
+            resp = new_resp
+
+        req = self._handlers.dispatch('response_redirect', response)
+
+        if req is not None and isinstance(req, 'Request'):
+            return self.request(req)
 
         return resp
 
