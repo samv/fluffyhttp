@@ -112,7 +112,7 @@ class Client(object):
             raise e
 
         # XXX fix in Url
-        path = str(request.url.path)
+        path = str(request.url.path) or '/'
         r = conn.urlopen(
             method=request.method,
             url=path,
@@ -135,13 +135,13 @@ class Client(object):
             reason=r.reason,
         )
 
-        new_resp = self._handlers.dispatch('response_done', response)
+        new_resp = self._handlers.dispatch('response_done', resp)
         if new_resp is not None:
             resp = new_resp
 
-        req = self._handlers.dispatch('response_redirect', response)
+        req = self._handlers.dispatch('response_redirect', resp)
 
-        if req is not None and isinstance(req, 'Request'):
+        if req is not None and isinstance(req, Request):
             return self.request(req)
 
         return resp
