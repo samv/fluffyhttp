@@ -1,5 +1,5 @@
 def http_exception(resp):
-    raise HTTPException(resp.status, reason=resp.reason, headers=[])
+    raise HTTPException(resp.status, reason=resp.message, headers=[])
 
 
 class HTTPException(Exception):
