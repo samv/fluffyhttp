@@ -30,6 +30,16 @@ class Response(object):
         return False
 
     @property
+    def is_client_error(self):
+        if self.status >= 400 and self.status < 500:
+            return True
+        return False
+
+    @property
+    def is_server_error(self):
+        return self.is_error()
+    
+    @property
     def is_error(self):
         if self.status >= 500 and self.status < 600:
             return True
@@ -57,7 +67,7 @@ class Response(object):
 
     @property
     def headers(self):
-        pass
+        return self._headers
 
     @property
     def status_line(self):

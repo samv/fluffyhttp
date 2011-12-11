@@ -3,7 +3,6 @@ from fluffyhttp.client import Client
 from fluffyhttp.handlers import Handlers
 from fluffyhttp.request import Request
 from fluffyhttp.response import Response
-from fluffyhttp.exception import *
 
 
 def _cb_request_prepare(request):
@@ -58,10 +57,8 @@ class TestHandlers(TestCase):
         client = Client()
         client.add_handler('request_prepare', _cb_request_prepare)
 
-        with self.assertRaises(HTTPException) as cm:
-            client.request(request)
-        exception = cm.exception
-        self.assertEqual(exception.status, 400)
+        resp = client.request(request)
+        self.assertEqual(resp.status, 400)
 
         handlers = Handlers()
         handlers.add_handler('request_prepare', _cb_request_prepare_change_request)

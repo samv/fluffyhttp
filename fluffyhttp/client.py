@@ -2,7 +2,6 @@ from request import Request
 from response import Response
 from headers import Headers
 from handlers import Handlers
-from exception import *
 from fluffyurl.url import Url
 from urllib3.poolmanager import PoolManager
 from urllib3 import connectionpool, poolmanager
@@ -79,14 +78,11 @@ class Client(object):
         except Exception, e:
             raise e
 
-        if resp.is_success is False:
-            if resp.is_redirect and len(resp.redirects) < self.max_redirect:
-                try:
-                    return self._follow_redirect(resp, request)
-                except Exception, e:
-                    raise e
-            else:
-                http_exception(resp)
+        if resp.is_redirect and len(resp.redirects) < self.max_redirect:
+            try:
+                return self._follow_redirect(resp, request)
+            except Exception, e:
+                raise e
 
         return resp
 

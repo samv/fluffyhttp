@@ -1,30 +1,23 @@
-def http_exception(resp):
-    raise HTTPException(resp.status, reason=resp.message, headers=[])
+def http_exception(response):
+    raise HTTPException(response)
 
 
 class HTTPException(Exception):
 
-    def __init__(self, status, reason, headers):
-        self.status = status
-        self.reason = reason
+    def __init__(self, response):
+        self._response = response
 
     def __str__(self):
-        return "%i %s" % (self.status, self.reason)
+        return self._response.message
 
     @property
     def is_redirect(self):
-        if self.status >= 300 and self.status < 400:
-            return True
-        return False
+        return self._response.is_redirect
 
     @property
     def is_client_error(self):
-        if self.status >= 400 and self.status < 500:
-            return True
-        return False
+        return self._response.is_client_error
 
     @property
     def is_server_error(self):
-        if self.status >= 500 and self.status < 600:
-            return True
-        return False
+        return self._response.is_server_error
