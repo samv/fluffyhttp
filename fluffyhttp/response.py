@@ -3,12 +3,13 @@ from headers import Headers
 
 class Response(object):
 
-    def __init__(self, status, headers=Headers(), content=None, message=None):
+    def __init__(self, status, headers=Headers(), content=None, message=None, request=None):
         self.status = status
-        self._headers = headers
-        self._content = content
         self.message = message
         self.redirects = list()
+        self._headers = headers
+        self._content = content
+        self._request = request
 
     @property
     def is_info(self):
@@ -33,6 +34,19 @@ class Response(object):
         if self.status >= 500 and self.status < 600:
             return True
         return False
+
+    @property
+    def base(self):
+        if self.header('Content-Base'):
+            return self.header('Content-Base')
+        if self.header('Content-Location'):
+            return self.header('Content-Location')
+        else:
+            return self.request.url
+
+    @property
+    def request(self):
+        return self._request
 
     @property
     def content(self):
