@@ -95,7 +95,7 @@ class Client(object):
         try:
             request = self._handlers.dispatch('request_prepare', request)
         except Exception, e:
-            response = Response(status=400, message='Bad request')
+            response = Response(status=400, message='Bad request', request=request)
             return response
 
         url = request.url
@@ -133,6 +133,7 @@ class Client(object):
             headers=headers,
             content=content,
             message=r.reason,
+            request = request
         )
 
         new_resp = self._handlers.dispatch('response_done', resp)
