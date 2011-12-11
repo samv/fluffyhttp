@@ -14,13 +14,13 @@ class TestClient(TestCase):
     def test_method(self):
         for method in ['GET', 'get', 'gEt']:
             request = Request(method, 'http')
-            self.assertEqual(request.method, 'GET')
+            self.assertEqual(request.method, method)
 
         request = Request('GET', 'http')
         request.method = 'POST'
         self.assertEqual(request.method, 'POST')
         request.method = 'post'
-        self.assertEqual(request.method, 'POST')
+        self.assertEqual(request.method, 'post')
 
     def test_headers(self):
         request = Request('GET', 'http', {'Connection':'keep-alive'})

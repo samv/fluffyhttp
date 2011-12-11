@@ -23,7 +23,7 @@ class Request(object):
         return self._method
 
     def _set_method(self, value):
-        self._method = str(value).upper()
+        self._method = str(value)
 
     def header(self, name, value=None):
         if value is None:
