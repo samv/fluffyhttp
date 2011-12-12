@@ -28,3 +28,14 @@ class TestClient(TestCase):
         request = Request('GET', 'http://baz')
         response = Response(status=200, message='OK', request=request)
         self.assertEqual(response.base, 'http://baz')
+
+    def test_date(self):
+        response = Response(status=200, message='OK',
+                headers={'Last-Modified':'Sat, 02 Jul 2011 07:53:00 GMT'})
+        self.assertTrue(response.last_modified)
+        self.assertEqual(response.last_modified, 1309618380)
+
+    def test_content(self):
+        response = Response(status=200, message='OK',
+                headers={'Content-Type':'text/plain'})
+        self.assertTrue(response.content_is_text)
