@@ -7,7 +7,17 @@ class Response(object):
         self.status = status
         self.message = message
         self.redirects = list()
+
+        if (not isinstance(headers, Headers)):
+            headers = Headers(headers)
+
         self._headers = headers
+
+        methods_from_headers = ['last_modified', 'date', 'expires',
+        'if_modified_since', 'if_unmodified_since', 'content_is_text']
+        for m in methods_from_headers:
+            setattr(self.__class__, m, getattr(headers, m))
+
         self._content = content
         self._request = request
 
