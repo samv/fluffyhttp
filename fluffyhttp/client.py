@@ -5,6 +5,7 @@ from handlers import Handlers
 from fluffyurl.url import Url
 from urllib3.poolmanager import PoolManager
 from urllib3 import connectionpool, poolmanager
+import os
 
 
 class Client(object):
@@ -70,6 +71,17 @@ class Client(object):
     def delete(self, url, headers={}, content=None):
         request = Request('DELETE', url, headers=headers)
         return self._request(request)
+
+    def mirror(self, url, file):
+        req = Request('GET', url)
+        res = self.request(req)
+        if res.is_success:
+            f = open(file, 'w')
+            f.write(res.content)
+            f.close()
+            last_modified = res.last_modified
+            if last_modified:
+                os.utime(file, (last_modified, last_modified))
 
     def _request(self, request):
 
