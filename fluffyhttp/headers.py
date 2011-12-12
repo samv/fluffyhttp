@@ -1,3 +1,7 @@
+from date import Date
+import re
+
+
 class Headers(dict):
 
     @property
@@ -28,3 +32,41 @@ class Headers(dict):
             return self[key]
         else:
             return default
+
+    @property
+    def content_type(self):
+        return self.get('Content-Type')
+
+    @property
+    def content_is_text(self):
+        if self.content_type is None:
+            return False
+        if re.search(r'^text/', self.content_type):
+            return True
+        return False
+
+    @property
+    def last_modified(self):
+        return self.date_header('Last-Modified')
+
+    @property
+    def date(self):
+        return self.date_header('Date')
+
+    @property
+    def expires(self):
+        return self.date_header('Expires')
+
+    @property
+    def if_modified_since(self):
+        return self.date_header('If-Modified-Since')
+
+    @property
+    def if_unmodified_since(self):
+        return self.date_header('If-Unmodified-Since')
+
+    def date_header(self, key):
+        value = self.get(key)
+        if value is None:
+            return None
+        return Date.str2time(value)
