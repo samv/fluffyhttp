@@ -28,12 +28,6 @@ Interface
 
 .. attribute:: Response.reason
 
-.. attribute:: Response.last_modified
-
-.. attribute:: Response.date
-
-.. attribute:: Response.expires
-
 .. attribute:: Response.content_is_text
 
 .. attribute:: Response.content_is_xml
@@ -45,3 +39,10 @@ Interface
 .. method:: Response.is_redirect()
 
 .. method:: Response.header()
+
+.. method:: Response.last_modified()
+
+.. method:: Response.date()
+
+.. method:: Response.expires()
+

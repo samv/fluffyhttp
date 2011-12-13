@@ -29,3 +29,7 @@ Interface
 .. attribute:: Request.content
 
 .. method:: Request.header()
+
+.. method:: Request.if_modified_since([date])
+
+.. method:: Request.if_unmodified_since([date])
