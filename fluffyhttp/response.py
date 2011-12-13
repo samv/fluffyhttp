@@ -13,7 +13,7 @@ class Response(object):
 
         self._headers = headers
 
-        methods_from_headers = ['last_modified', 'date', 'expires',
+        methods_from_headers = ['last_modified', 'date', 'expires', 'content_length',
         'content_is_text', 'content_is_xml', 'content_is_xhtml']
 
         for m in methods_from_headers:

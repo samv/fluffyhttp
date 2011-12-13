@@ -37,6 +37,9 @@ class Headers(dict):
     def content_type(self):
         return self.get('Content-Type')
 
+    def content_length(self):
+        return self.get('Content-Length')
+
     @property
     def content_is_text(self):
         ct = self.content_type
@@ -82,8 +85,8 @@ class Headers(dict):
     def if_modified_since(self, date=None):
         return self.date_header('If-Modified-Since', date)
 
-    def if_unmodified_since(self, date):
-        return self.date_header('If-Unmodified-Since')
+    def if_unmodified_since(self, date=None):
+        return self.date_header('If-Unmodified-Since', date)
 
     def date_header(self, key, date=None):
         if date:
