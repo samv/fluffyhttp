@@ -70,28 +70,28 @@ class Headers(dict):
             return True
         return False
 
-    @property
-    def last_modified(self):
-        return self.date_header('Last-Modified')
+    def last_modified(self, date=None):
+        return self.date_header('Last-Modified', date)
 
-    @property
-    def date(self):
-        return self.date_header('Date')
+    def date(self, date=None):
+        return self.date_header('Date', date)
 
-    @property
-    def expires(self):
-        return self.date_header('Expires')
+    def expires(self, date=None):
+        return self.date_header('Expires', date)
 
-    @property
-    def if_modified_since(self):
-        return self.date_header('If-Modified-Since')
+    def if_modified_since(self, date=None):
+        return self.date_header('If-Modified-Since', date)
 
-    @property
-    def if_unmodified_since(self):
+    def if_unmodified_since(self, date):
         return self.date_header('If-Unmodified-Since')
 
-    def date_header(self, key):
-        value = self.get(key)
-        if value is None:
-            return None
-        return Date.str2time(value)
+    def date_header(self, key, date=None):
+        if date:
+            date = Date.time2str(date)
+            self[key] = date
+        else:
+            value = self.get(key)
+            if value is None:
+                raise Exception(value)
+                return None
+            return Date.str2time(value)
