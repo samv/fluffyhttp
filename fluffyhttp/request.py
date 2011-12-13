@@ -19,6 +19,10 @@ class Request(object):
             headers = Headers(headers)
         self._headers = headers
 
+        methods_from_headers = ['if_modified_since', 'if_unmodified_since']
+        for m in methods_from_headers:
+            setattr(self.__class__, m, getattr(headers, m))
+
     def _get_method(self):
         return self._method
 
