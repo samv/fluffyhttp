@@ -92,6 +92,5 @@ class Headers(dict):
         else:
             value = self.get(key)
             if value is None:
-                raise Exception(value)
                 return None
             return Date.str2time(value)
