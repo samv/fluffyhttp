@@ -32,8 +32,8 @@ class TestClient(TestCase):
     def test_date(self):
         response = Response(status=200, message='OK',
                 headers={'Last-Modified':'Sat, 02 Jul 2011 07:53:00 GMT'})
-        self.assertTrue(response.last_modified)
-        self.assertEqual(response.last_modified, 1309618380)
+        self.assertTrue(response.last_modified())
+        self.assertEqual(response.last_modified(), 1309618380)
 
     def test_content(self):
         response = Response(status=200, message='OK',

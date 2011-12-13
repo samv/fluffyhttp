@@ -2,6 +2,7 @@ from unittest2 import TestCase
 from fluffyhttp.request import Request
 from fluffyhttp.headers import Headers
 from fluffyurl.url import Url
+from datetime import datetime
 
 
 class TestClient(TestCase):
@@ -40,3 +41,8 @@ class TestClient(TestCase):
         request = Request('GET', 'http', content='foo')
         self.assertEqual(request.content, 'foo')
 
+    def test_date_headers(self):
+        request = Request('GET', 'http')
+        now = datetime(2011, 12, 12, 12, 0, 0)
+        request.if_modified_since(now)
+        self.assertEqual(request._headers.get('If-Modified-Since'), 'Mon, 12 Dec 2011 12:00:00 GMT')
