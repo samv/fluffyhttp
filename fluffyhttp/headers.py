@@ -39,9 +39,34 @@ class Headers(dict):
 
     @property
     def content_is_text(self):
-        if self.content_type is None:
+        ct = self.content_type
+        if ct is None:
             return False
-        if re.search(r'^text/', self.content_type):
+        if re.search(r'^text/', ct):
+            return True
+        return False
+
+    @property
+    def content_is_xhtml(self):
+        ct = self.content_type
+        if ct is None:
+            return False
+        if ct == 'application/xhtml+xml':
+            return True
+        if ct == 'application/vnd.wap.xhtml+xml':
+            return True
+        return False
+
+    @property
+    def content_is_xml(self):
+        ct = self.content_type
+        if ct is None:
+            return False
+        if ct == 'text/xml':
+            return True
+        if ct == 'application/xml':
+            return True
+        if re.search(r'\+xml$', ct):
             return True
         return False
 
