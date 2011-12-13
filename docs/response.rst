@@ -28,6 +28,18 @@ Interface
 
 .. attribute:: Response.reason
 
+.. attribute:: Response.last_modified
+
+.. attribute:: Response.date
+
+.. attribute:: Response.expires
+
+.. attribute:: Response.content_is_text
+
+.. attribute:: Response.content_is_xml
+
+.. attribute:: Response.content_is_xhtml
+
 .. method:: Response.is_success()
 
 .. method:: Response.is_redirect()
