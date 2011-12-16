@@ -65,7 +65,7 @@ class Client(object):
         return self._request(request)
 
     def post(self, url, headers={}, content=None):
-        request = Request('PUT', url, headers=headers, content=content)
+        request = Request('POST', url, headers=headers, content=content)
         return self._request(request)
 
     def delete(self, url, headers={}, content=None):
